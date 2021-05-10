@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import bcrypt from 'bcrypt'
+import bcrypt from 'react-native-bcrypt'
 
 const SALT_ROUNDS = 10
 
