@@ -4,8 +4,8 @@ import bcrypt from 'bcrypt'
 const SALT_ROUNDS = 10
 
 export default class User {
-	constructor(username, password) {
-		this.id       = null
+	constructor(username, password, id = null) {
+		this.id       = id
 		this.username = username
 		this.password = password
 	}
@@ -31,10 +31,20 @@ export default class User {
 		const JSONUser = users.filter(user => user.username === username)[0] ?? null
 
 		if (JSONUser && await bcrypt.compare(password, JSONUser.password)) {
+			await AsyncStorage.setItem('@user', new User(JSONUser.username, null, JSONUser.id))
 			return true
 		}
 
 		return false
+	}
+
+	static async logout() {
+		await AsyncStorage.removeItem('@user')
+	}
+
+	static async getCurrentUser() {
+		const JSONUser = await AsyncStorage.getItem('@user')
+		return JSONUser ? new User(JSONUser.username, null, JSONUser.id) : null
 	}
 
 	static async getLastId() {

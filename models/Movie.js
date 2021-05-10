@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+import User from './User'
+
 export default class Movie {
-	constructor(title, posterURI, summary, comments, rating, imdbLink, id = null) {
+	constructor(title, posterURI, summary, comments, rating, imdbLink, userId, id = null) {
 		this.id        = id ?? null
 		this.title     = title
 		this.posterURI = posterURI
@@ -9,6 +11,7 @@ export default class Movie {
 		this.comments  = comments
 		this.rating    = rating
 		this.imdbLink  = imdbLink
+		this.userId    = userId
 	}
 
 	static createFromJSON(JSON) {
@@ -19,6 +22,7 @@ export default class Movie {
 			JSON.comments,
 			JSON.rating,
 			JSON.imdbLink,
+			JSON.userId,
 			JSON.id
 		)
 	}
@@ -59,11 +63,14 @@ export default class Movie {
 		return null
 	}
 
-	static async getAll() {
+	static async getAllForCurrentUser() {
+		const user = await User.getCurrentUser()
 		try {
 			const value = await AsyncStorage.getItem('@movies')
 			if (value) {
-				return JSON.parse(value).map(movie => Movie.createFromJSON(movie))
+				return JSON.parse(value)
+					.filter(movie => movie.userId === user.id)
+					.map(movie => Movie.createFromJSON(movie))
 			}
 		} catch(e) {
 			return []

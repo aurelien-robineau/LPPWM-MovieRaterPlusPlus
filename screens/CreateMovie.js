@@ -6,6 +6,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import CustomButton from '../components/CustomButton'
 import Movie from '../models/Movie'
 import RatingInput from '../components/RatingInput';
+import User from '../models/User';
 
 const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/
 
@@ -42,6 +43,8 @@ const CreateMovie = ({ navigation, route }) => {
 			return
 		}
 
+		const user = await User.getCurrentUser()
+
 		let newMovie = null
 		if (!movie) {
 			newMovie = new Movie(
@@ -50,7 +53,8 @@ const CreateMovie = ({ navigation, route }) => {
 				summary,
 				comments,
 				rating,
-				imdbLink
+				imdbLink,
+				user.id
 			)
 		}
 		else {
