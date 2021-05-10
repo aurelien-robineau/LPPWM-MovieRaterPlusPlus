@@ -45,7 +45,7 @@ export default class Movie {
 	}
 
 	static async deleteById(id) {
-		const movies = await Movie.getAll()
+		const movies = await Movie.getAllForCurrentUser()
 		const newMovies = movies.filter(movie => movie.id !== id)
 		await AsyncStorage.setItem('@movies', JSON.stringify(newMovies))
 	}
