@@ -11,20 +11,26 @@ const Login = ({ navigation, route }) => {
 	const [username, setUsername] = useState(null)
 	const [password, setPassword] = useState(null)
 	const [error, setError] = useState(null)
+	const [loading, setLoading] = useState(false)
 
 	const login = async () => {
+		setLoading(true)
 		if (await validateForm()) {
 			const success = await User.login(username, password)
 			if (!success) {
 				setError("Nom d'utilisateur ou mot de passe invalide")
+				setLoading(false)
 				return
 			}
 
 			onSuccess()
 		}
+
+		setLoading(false)
 	}
 
 	const register = async () => {
+		setLoading(true)
 		if (await validateForm()) {
 			const user = new User(username, password)
 			await user.save()
@@ -32,11 +38,14 @@ const Login = ({ navigation, route }) => {
 			const success = await User.login(username, password)
 			if (!success) {
 				setError("Nom d'utilisateur ou mot de passe invalide")
+				setLoading(false)
 				return
 			}
 
 			onSuccess()
 		}
+
+		setLoading(false)
 	}
 
 	const validateForm = async () => {
@@ -96,6 +105,7 @@ const Login = ({ navigation, route }) => {
 					label={action === 'login' ? 'Se connecter' : "S'inscrire"}
 					onPress={() => action === 'login' ? login() : register()}
 					style={{ width: '100%' }}
+					loading={loading}
 				/>
 
 				<CustomButton 

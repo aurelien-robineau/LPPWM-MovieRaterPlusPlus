@@ -1,15 +1,19 @@
 import React from 'react'
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
-const CustomButton = ({ label, onPress, style, labelStyle }) => {
+const CustomButton = ({ label, onPress, style, labelStyle, loading = false }) => {
   return (
 	  	<TouchableOpacity
 	  		style={{ ...styles.button, ...style }}
-			onPress={onPress}
+			onPress={loading ? null : onPress}
 		>
-		  	<Text style={{ ...styles.buttonLabel, ...labelStyle }}>
-			  	{ label }
-			</Text>
+			{loading ? 
+				<ActivityIndicator size="large" color={labelStyle?.color ?? 'white'} />
+				:
+				<Text style={{ ...styles.buttonLabel, ...labelStyle }}>
+					{ label }
+				</Text>
+			}
 	  </TouchableOpacity>
   )
 }
