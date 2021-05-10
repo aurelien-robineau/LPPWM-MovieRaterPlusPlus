@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import bcrypt from 'react-native-bcrypt'
 
-const SALT_ROUNDS = 10
+const SALT = 10
 
 export default class User {
 	constructor(username, password, id = null) {
 		this.id       = id
 		this.username = username
-		this.password = password
+		this.password = bcrypt.hashSync(password, SALT)
 	}
 
 	async save () {
@@ -18,7 +18,6 @@ export default class User {
 		this.id = lastId
 		await User.setLastId(lastId)
 
-		this.password = await bcrypt.hash(this.password, SALT_ROUNDS)
 		users.push(this)
 
 		await AsyncStorage.setItem('@users', JSON.stringify(users))
@@ -30,7 +29,7 @@ export default class User {
 
 		const JSONUser = users.filter(user => user.username === username)[0] ?? null
 
-		if (JSONUser && await bcrypt.compare(password, JSONUser.password)) {
+		if (JSONUser && bcrypt.compareSync(password, JSONUser.password)) {
 			await AsyncStorage.setItem('@user', new User(JSONUser.username, null, JSONUser.id))
 			return true
 		}
