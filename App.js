@@ -19,6 +19,8 @@ const App = () => {
 		setCurrentUser(await User.getCurrentUser())
 	}
 
+	User.setOnLogout(loadCurrentUser)
+
 	return (
 		<NavigationContainer>
 			{currentUser

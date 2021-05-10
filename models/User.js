@@ -4,6 +4,8 @@ import bcrypt from 'react-native-bcrypt'
 const SALT = 10
 
 export default class User {
+	static onLogout = null
+
 	constructor(username, password, id = null) {
 		this.id       = id
 		this.username = username
@@ -55,6 +57,7 @@ export default class User {
 
 	static async logout() {
 		await AsyncStorage.removeItem('@user')
+		User.onLogout()
 	}
 
 	static async getCurrentUser() {
@@ -70,5 +73,9 @@ export default class User {
 
 	static async setLastId(id) {
 		await AsyncStorage.setItem('@lastUserId', id.toString())
+	}
+
+	static setOnLogout(onLogout) {
+		User.onLogout = onLogout
 	}
 }

@@ -22,7 +22,7 @@ const MoviesList = ({ navigation }) => {
 	}, [navigation])
 
 	const loadMovies = async () => {
-		setMovies((await Movie.getAll()).sort((a, b) => a.id > b.id))
+		setMovies((await Movie.getAllForCurrentUser()).sort((a, b) => a.id > b.id))
 	}
 
 	const renderMovie = ({ item }) => {

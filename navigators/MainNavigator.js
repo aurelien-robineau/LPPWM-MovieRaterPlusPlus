@@ -3,10 +3,10 @@ import { TouchableOpacity } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Icon } from 'react-native-elements'
 
-import MoviesList from '.././screens/MoviesList'
-import CreateMovie from '.././screens/CreateMovie'
-import DisplayMovie from '.././screens/DisplayMovie'
-import Login from '.././screens/Login'
+import MoviesList from '../screens/MoviesList'
+import CreateMovie from '../screens/CreateMovie'
+import DisplayMovie from '../screens/DisplayMovie'
+import Account from '../screens/Account'
 
 const Stack = createStackNavigator();
 
@@ -16,7 +16,24 @@ const MainNavigator = () => {
 			<Stack.Screen
 				name="Home"
 				component={MoviesList}
-				options={{ title: 'Mes films' }}
+				options={({ navigation }) => ({
+					title: 'Mes films',
+					headerRight: () => (
+						<TouchableOpacity onPress={() => navigation.navigate('Account')}>
+							<Icon
+								name="account-circle"
+								size={24}
+								color='black'
+								style={{ marginRight: 20 }}
+							/>
+						</TouchableOpacity>
+					)
+				})}
+			/>
+			<Stack.Screen
+				name="Account"
+				component={Account}
+				options={{ title: 'Mon compte' }}
 			/>
 			<Stack.Screen
 				name="CreateMovie"
