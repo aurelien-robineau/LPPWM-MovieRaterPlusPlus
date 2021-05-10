@@ -2,10 +2,69 @@ import React, { useState } from 'react'
 import { StyleSheet, View, Text, TextInput } from 'react-native'
 
 import CustomButton from '../components/CustomButton'
+import User from '../models/User'
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, route }) => {
+	const { onSuccess } = route.params
+
+	const [action, setAction] = useState('login')
 	const [username, setUsername] = useState(null)
 	const [password, setPassword] = useState(null)
+	const [error, setError] = useState(null)
+
+	const login = async () => {
+		if (await validateForm()) {
+			const success = await User.login(username, password)
+			if (!success) {
+				setError("Nom d'utilisateur ou mot de passe invalide")
+				return
+			}
+
+			onSuccess()
+		}
+	}
+
+	const register = async () => {
+		if (await validateForm()) {
+			const user = new User(username, password)
+			await user.save()
+
+			const success = await User.login(username, password)
+			if (!success) {
+				setError("Nom d'utilisateur ou mot de passe invalide")
+				return
+			}
+
+			onSuccess()
+		}
+	}
+
+	const validateForm = async () => {
+		if (!username || !password) {
+			setError('Veuillez remplir tous les champs')
+			return false
+		}
+
+		if (action === 'register' && password.length < 8) {
+			setError('Le mot de passe de faire 8 caractère au minimum')
+			return false
+		}
+
+		if (action === 'login' && !(await User.isUsernameAvailable(username))) {
+			setError("Nom d'utilisateur déjà utilisé")
+			return false
+		}
+		
+		setError(null)
+		return true
+	}
+
+	const switchAction = () => {
+		setAction(action === 'login' ? 'register' : 'login')
+		setUsername(null)
+		setPassword(null)
+		navigation.setOptions({ title: action === 'login' ? 'Inscription' : 'Connexion' })
+	}
 
 	return (
 		<View style={styles.container}>
@@ -31,8 +90,19 @@ const Login = ({ navigation }) => {
 			</View>
 
 			<View style={styles.submitButtonWrapper}>
+				{error && <Text style={styles.error}>{ error }</Text>}
+
 				<CustomButton 
-					label="Connexion"
+					label={action === 'login' ? 'Se connecter' : "S'inscrire"}
+					onPress={() => action === 'login' ? login() : register()}
+					style={{ width: '100%' }}
+				/>
+
+				<CustomButton 
+					label={action === 'login' ? 'Inscription' : 'Connexion'}
+					onPress={switchAction}
+					style={styles.switchActionButton}
+					labelStyle={{ color: 'black' }}
 				/>
 			</View>
 		</View>
@@ -64,6 +134,19 @@ const styles = StyleSheet.create({
 		display: 'flex',
 		alignItems: 'center',
 		marginTop: 30
+	},
+
+	switchActionButton: {
+		width: '100%',
+		backgroundColor: 'transparent',
+		borderWidth: 1,
+		borderColor: 'black'
+	},
+
+	error: {
+		fontSize: 18,
+		color: 'red',
+		textAlign: 'center'
 	}
 })
 

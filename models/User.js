@@ -7,7 +7,7 @@ export default class User {
 	constructor(username, password, id = null) {
 		this.id       = id
 		this.username = username
-		this.password = bcrypt.hashSync(password, SALT)
+		this.password = password ? bcrypt.hashSync(password, SALT) : null
 	}
 
 	async save () {
@@ -30,11 +30,27 @@ export default class User {
 		const JSONUser = users.filter(user => user.username === username)[0] ?? null
 
 		if (JSONUser && bcrypt.compareSync(password, JSONUser.password)) {
-			await AsyncStorage.setItem('@user', new User(JSONUser.username, null, JSONUser.id))
+			await AsyncStorage.setItem('@user', JSON.stringify({
+				id: JSONUser.id,
+				username: JSONUser.username
+			}))
+
 			return true
 		}
 
 		return false
+	}
+
+	static async isUsernameAvailable(username) {
+		const value = await AsyncStorage.getItem('@users')
+		let users = value ? JSON.parse(value) : []
+
+		for (let user in users) {
+			if (user.username === username)
+				return false
+		}
+
+		return true
 	}
 
 	static async logout() {
@@ -42,7 +58,8 @@ export default class User {
 	}
 
 	static async getCurrentUser() {
-		const JSONUser = await AsyncStorage.getItem('@user')
+		const value = await AsyncStorage.getItem('@user')
+		const JSONUser = value ? JSON.parse(value) : null
 		return JSONUser ? new User(JSONUser.username, null, JSONUser.id) : null
 	}
 
