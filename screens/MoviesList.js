@@ -40,7 +40,7 @@ const MoviesList = ({ navigation }) => {
 				<FlatList
 					data={movies}
 					renderItem={renderMovie}
-					keyExtractor={item => item.id}
+					keyExtractor={item => item.id.toString()}
 				/>
 				:
 				<View style={styles.noMoviesContainer}>
