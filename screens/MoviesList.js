@@ -31,7 +31,7 @@ const MoviesList = ({ navigation }) => {
 	const loadMovies = async () => {
 		const userMovies = (await Movie.getAllForCurrentUser()).sort((a, b) => a.id < b.id)
 		setMovies(userMovies)
-		setMoviesToDisplay(userMovies.sort(movieComparator))
+		setMoviesToDisplay([...userMovies.sort(movieComparator)])
 	}
 
 	const formatResearch = (research) => {
@@ -51,7 +51,7 @@ const MoviesList = ({ navigation }) => {
 				}
 			})
 
-			setMoviesToDisplay(matchingMovies.sort(movieComparator))
+			setMoviesToDisplay([...matchingMovies.sort(movieComparator)])
 		}
 		else {
 			setMoviesToDisplay(movies)
