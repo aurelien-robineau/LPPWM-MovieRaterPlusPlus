@@ -43,11 +43,19 @@ const DisplayMovie = ({ navigation, route }) => {
 
 					<Text style={styles.value}>{ movie.summary }</Text>
 
-					<Text style={styles.label}>Mes commentaires</Text>
-					<Text style={styles.value}>{ movie.comments }</Text>
+					{movie.comments &&
+						<>
+							<Text style={styles.label}>Mes commentaires</Text>
+							<Text style={styles.value}>{ movie.comments }</Text>
+						</>
+					}
 
-					<Text style={styles.label}>Lien IMDB</Text>
-					<Text style={styles.value}>{ movie.imdbLink }</Text>
+					{movie.imdbLink &&
+						<>
+							<Text style={styles.label}>Lien IMDB</Text>
+							<Text style={styles.value}>{ movie.imdbLink }</Text>
+						</>
+					}
 
 					<View style={styles.controlsContainer}>
 						<CustomButton
