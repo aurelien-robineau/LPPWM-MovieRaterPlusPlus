@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import Account from '../screens/Account'
+import Settings from '../screens/Settings'
 import BottomNavigator from './BottomNavigator'
 
 const Stack = createStackNavigator();
@@ -17,9 +17,9 @@ const MainNavigator = () => {
 				options={({ navigation }) => ({
 					title: 'MovieRater',
 					headerRight: () => (
-						<TouchableOpacity onPress={() => navigation.navigate('Account')}>
+						<TouchableOpacity onPress={() => navigation.navigate('Settings')}>
 							<Icon
-								name="account-circle"
+								name="settings"
 								size={24}
 								color='black'
 								style={{ marginRight: 20 }}
@@ -28,9 +28,9 @@ const MainNavigator = () => {
 					)
 				})}/>
 			<Stack.Screen
-				name="Account"
-				component={Account}
-				options={{ title: 'Mon compte' }}
+				name="Settings"
+				component={Settings}
+				options={{ title: 'Paramètres' }}
 			/>
 		</Stack.Navigator>
 	);

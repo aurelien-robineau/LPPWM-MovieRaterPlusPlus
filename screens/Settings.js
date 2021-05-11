@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, TextInput } from 'react-native'
 import CustomButton from '../components/CustomButton'
 import User from '../models/User'
 
-const Account = ({ navigation }) => {
+const Settings = ({ navigation }) => {
 	const [user, setUser] = useState(null)
 	
 	useEffect(() => {
@@ -62,4 +62,4 @@ const styles = StyleSheet.create({
 	}
 })
 
-export default Account
+export default Settings
