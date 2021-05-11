@@ -12,7 +12,9 @@ const MovieCard = ({ movie, onPress }) => {
 			<Image style={styles.image} source={{ uri: movie.posterURI }}/>
 			<View style={styles.movieInfo}>
 				<Text style={styles.title}>{ movie.title }</Text>
-				<RatingView iconSize={30} value={movie.rating} />
+				<View style={styles.ratingContainer}>
+					<RatingView iconSize={30} value={movie.rating} />
+				</View>
 			</View>
 		</TouchableOpacity>
   )
@@ -37,16 +39,22 @@ const styles = StyleSheet.create({
 	},
 
 	image: {
-		height: 85,
+		height: '100%',
+		minHeight: 85,
 		width: 85
 	},
 
 	movieInfo: {
-		marginLeft: 15
+		marginLeft: 15,
+		width: '70%'
 	},
 
 	title: {
 		fontSize: 20
+	},
+
+	ratingContainer: {
+		width: '60%'
 	},
 
 	rating: {
