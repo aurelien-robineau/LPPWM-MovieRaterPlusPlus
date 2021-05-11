@@ -69,6 +69,7 @@ const SearchMovie = ({ navigation }) => {
 						<CustomButton
 							label="Ajouter à ma liste"
 							onPress={() => navigation.navigate('CreateMovie', {
+								movie: null,
 								defaults: {
 									title: movie.title,
 									posterURI: movie.posterURI,

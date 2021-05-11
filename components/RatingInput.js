@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { Icon } from 'react-native-elements'
 
@@ -12,6 +12,10 @@ const RatingInput = ({ iconSize, onChange, value = 0, disabled = false }) => {
 				onChange(value)
 		}
 	}
+
+	useEffect(() => {
+		setRating(value)
+	}, [value])
 
 	return (
 		<View style={styles.ratingContainer}>

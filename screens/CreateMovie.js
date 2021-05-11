@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, TextInput, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
 import { Icon } from 'react-native-elements'
 import * as DocumentPicker from 'expo-document-picker';
@@ -11,8 +11,8 @@ import User from '../models/User';
 const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/
 
 const CreateMovie = ({ navigation, route }) => {
-	const movie = route.params?.movie ?? null
-	const defaults = route.params?.defaults ?? null
+	let movie = route.params?.movie ?? null
+	let defaults = route.params?.defaults ?? null
 
 	const [title, setTitle] = useState(movie?.title ?? defaults?.title ?? null)
 	const [poster, setPoster] = useState(movie?.posterURI ?? defaults?.posterURI ?? null)
@@ -21,6 +21,26 @@ const CreateMovie = ({ navigation, route }) => {
 	const [rating, setRating] = useState(movie?.rating ?? defaults?.rating ?? 0)
 	const [imdbLink, setImdbLink] = useState(movie?.imdbLink ?? defaults?.imdbLink ?? null)
 	const [errors, setErrors] = useState({})
+
+	
+	useEffect(() => {
+		navigation.addListener('blur', () => {
+			console.log('blur')
+			resetForm()
+		})
+	}, [navigation])
+
+	useEffect(() => {
+		movie = route.params?.movie ?? null
+		defaults = route.params?.defaults ?? null
+		setTitle(movie?.title ?? defaults?.title ?? null)
+		setPoster(movie?.posterURI ?? defaults?.posterURI ?? null)
+		setSummary(movie?.summary ?? defaults?.summary ?? null)
+		setComments(movie?.comments ?? defaults?.comments ?? null)
+		setRating(movie?.rating ?? defaults?.rating ?? 0)
+		setImdbLink(movie?.imdbLink ?? defaults?.imdbLink ?? null)
+		setErrors({})
+	}, [route])
 
 	const selectPoster = async () => {
 		const res = await DocumentPicker.getDocumentAsync({
@@ -96,6 +116,18 @@ const CreateMovie = ({ navigation, route }) => {
 			errors.imdbLink = 'Lien invalide'
 
 		return errors
+	}
+
+	const resetForm = () => {
+		movie = null
+		defaults = null
+		setTitle(null)
+		setPoster(null)
+		setSummary(null)
+		setComments(null)
+		setRating(0)
+		setImdbLink(null)
+		setErrors({})
 	}
 
 	return (
