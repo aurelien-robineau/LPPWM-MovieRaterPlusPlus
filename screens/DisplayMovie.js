@@ -9,8 +9,9 @@ const DisplayMovie = ({ navigation, route }) => {
 	const [movie, setMovie] = useState(null)
 	
 	useEffect(() => {
-		loadMovie()
-	}, [])
+		if (route.params?.id)
+			loadMovie()
+	}, [route.params?.id])
 
 	const loadMovie = async () => {
 		setMovie(await Movie.getById(route.params.id))
@@ -26,38 +27,47 @@ const DisplayMovie = ({ navigation, route }) => {
 			navigation.navigate('CreateMovie', { movie })
 	}
 
-	return movie && (
-		<ScrollView>
-			<Image style={styles.poster} source={{ uri: movie.posterURI }} />
+	if (route.params?.id) {
+		return movie && (
+			<ScrollView>
+				<Image style={styles.poster} source={{ uri: movie.posterURI }} />
 
-			<View style={styles.container}>
-				<View style={styles.ratingWrapper}>
-					<RatingView iconSize={35} value={movie.rating} />
+				<View style={styles.container}>
+					<View style={styles.ratingWrapper}>
+						<RatingView iconSize={35} value={movie.rating} />
+					</View>
+
+					<Text style={styles.value}>{ movie.summary }</Text>
+
+					<Text style={styles.label}>Mes commentaires</Text>
+					<Text style={styles.value}>{ movie.comments }</Text>
+
+					<Text style={styles.label}>Lien IMDB</Text>
+					<Text style={styles.value}>{ movie.imdbLink }</Text>
+
+					<View style={styles.controlsContainer}>
+						<CustomButton
+							label="Modifier"
+							onPress={editMovie}
+						/>
+
+						<CustomButton
+							label="Supprimer"
+							onPress={deleteMovie}
+							style={{ backgroundColor: '#ff4a4a' }}
+						/>
+					</View>
 				</View>
-
-				<Text style={styles.value}>{ movie.summary }</Text>
-
-				<Text style={styles.label}>Mes commentaires</Text>
-				<Text style={styles.value}>{ movie.comments }</Text>
-
-				<Text style={styles.label}>Lien IMDB</Text>
-				<Text style={styles.value}>{ movie.imdbLink }</Text>
-
-				<View style={styles.controlsContainer}>
-					<CustomButton
-						label="Modifier"
-						onPress={editMovie}
-					/>
-
-					<CustomButton
-						label="Supprimer"
-						onPress={deleteMovie}
-						style={{ backgroundColor: '#ff4a4a' }}
-					/>
-				</View>
+			</ScrollView>
+		)
+	}
+	else {
+		return (
+			<View>
+				<Text style={styles.noMovie}>Pas de film sélectionné</Text>
 			</View>
-		</ScrollView>
-	)
+		)
+	}
 }
 
 const styles = StyleSheet.create({
@@ -89,6 +99,12 @@ const styles = StyleSheet.create({
 		display: 'flex',
 		alignItems: 'center',
 		marginTop: 20
+	},
+
+	noMovie: {
+		fontSize: 20,
+		textAlign: 'center',
+		marginTop: 50
 	}
 })
 

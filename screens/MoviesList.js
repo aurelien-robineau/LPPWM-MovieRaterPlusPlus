@@ -53,12 +53,6 @@ const MoviesList = ({ navigation }) => {
 					/>
 				</View>
 			}
-			<TouchableOpacity
-					style={styles.addMovieButtonContainer}
-					onPress={() => navigation.navigate('CreateMovie')}
-			>
-				<Icon containerStyle={styles.addMovieButton} name="add" size={30} color="white" />
-			</TouchableOpacity>
 		</SafeAreaView>
 	)
 }
@@ -76,18 +70,6 @@ const styles = StyleSheet.create({
 
 	noMoviesText: {
 		fontSize: 18
-	},
-
-	addMovieButtonContainer: {
-		position: 'absolute',
-		right: 25,
-		bottom: 30
-	},
-
-	addMovieButton: {
-		backgroundColor: 'black',
-		padding: 15,
-		borderRadius: 30
 	}
 })
 
