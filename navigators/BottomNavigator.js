@@ -5,6 +5,7 @@ import { Icon } from 'react-native-elements'
 import MoviesList from '../screens/MoviesList'
 import CreateMovie from '../screens/CreateMovie'
 import DisplayMovie from '../screens/DisplayMovie'
+import SearchMovie from './../screens/SearchMovie';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,6 +22,8 @@ const BottomNavigator = () => {
 						iconName = 'movie'
 					} else if (route.name === 'CreateMovie') {
 						iconName = 'add'
+					} else if (route.name === 'SearchMovie') {
+						iconName = 'search'
 					}
 
 					return <Icon name={iconName} size={size} color={color} />;
@@ -44,6 +47,11 @@ const BottomNavigator = () => {
 				name="CreateMovie"
 				component={CreateMovie}
 				options={{ title: 'Nouveau film' }}
+			/>
+			<Tab.Screen
+				name="SearchMovie"
+				component={SearchMovie}
+				options={{ title: 'Recherche IMDB' }}
 			/>
 		</Tab.Navigator>
 	);
