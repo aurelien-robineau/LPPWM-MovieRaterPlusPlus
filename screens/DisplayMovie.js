@@ -33,8 +33,9 @@ const DisplayMovie = ({ navigation, route }) => {
 				<Image style={styles.poster} source={{ uri: movie.posterURI }} />
 
 				<View style={styles.container}>
+					<Text style={styles.title}>{ movie.title }</Text>
 					<View style={styles.ratingWrapper}>
-						<RatingView iconSize={35} value={movie.rating} />
+						<RatingView iconSize={30} value={movie.rating} />
 					</View>
 
 					<Text style={styles.value}>{ movie.summary }</Text>
@@ -76,13 +77,19 @@ const styles = StyleSheet.create({
 	},
 
 	ratingWrapper: {
-		maxWidth: '60%',
-		marginTop: 10
+		maxWidth: '45%',
+		marginBottom: 10
 	},
 
 	poster: {
 		width: '100%',
 		height: 225
+	},
+
+	title: {
+		fontSize: 24,
+		marginTop: 10,
+		fontWeight: 'bold'
 	},
 
 	label: {
