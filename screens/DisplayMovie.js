@@ -37,6 +37,9 @@ const DisplayMovie = ({ navigation, route }) => {
 					<View style={styles.ratingWrapper}>
 						<RatingView iconSize={30} value={movie.rating} />
 					</View>
+					{movie.releaseDate &&
+						<Text style={styles.releaseDate}>Sorti le { movie.releaseDate.toLocaleDateString() }</Text>
+					}
 
 					<Text style={styles.value}>{ movie.summary }</Text>
 
@@ -90,6 +93,11 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		marginTop: 10,
 		fontWeight: 'bold'
+	},
+
+	releaseDate: {
+		fontSize: 16,
+		fontStyle: 'italic'
 	},
 
 	label: {

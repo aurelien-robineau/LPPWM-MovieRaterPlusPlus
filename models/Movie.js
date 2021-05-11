@@ -3,21 +3,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import User from './User'
 
 export default class Movie {
-	constructor(title, posterURI, summary, comments, rating, imdbLink, userId, id = null) {
-		this.id        = id ?? null
-		this.title     = title
-		this.posterURI = posterURI
-		this.summary   = summary
-		this.comments  = comments
-		this.rating    = rating
-		this.imdbLink  = imdbLink
-		this.userId    = userId
+	constructor(title, posterURI, releaseDate, summary, comments, rating, imdbLink, userId, id = null) {
+		this.id          = id ?? null
+		this.title       = title
+		this.posterURI   = posterURI,
+		this.releaseDate = releaseDate ? new Date(releaseDate) : null
+		this.summary     = summary
+		this.comments    = comments
+		this.rating      = rating
+		this.imdbLink    = imdbLink
+		this.userId      = userId
 	}
 
 	static createFromJSON(JSON) {
 		return new Movie(
 			JSON.title,
 			JSON.posterURI,
+			JSON.releaseDate,
 			JSON.summary,
 			JSON.comments,
 			JSON.rating,

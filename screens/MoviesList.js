@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TextInput } from 'react-native'
-import { StyleSheet, FlatList, SafeAreaView, Text, TouchableOpacity, View, StatusBar, Dimensions } from 'react-native'
-import { Icon } from 'react-native-elements'
-
+import { StyleSheet, FlatList, SafeAreaView, Text, View, StatusBar, Dimensions } from 'react-native'
+import { Picker } from '@react-native-community/picker'
 import MovieCard from '../components/MovieCard'
 import Movie from '../models/Movie'
 import CustomButton from './../components/CustomButton';
@@ -11,6 +10,7 @@ const MoviesList = ({ navigation }) => {
 	const [movies, setMovies] = useState([])
 	const [moviesToDisplay, setMoviesToDisplay] = useState([])
 	const [research, setResearch] = useState(null)
+	const [filter, setFilter] = useState('id')
 
 	useEffect(() => {
 		loadMovies()
@@ -24,10 +24,14 @@ const MoviesList = ({ navigation }) => {
 		return focus
 	}, [navigation])
 
+	useEffect(() => {
+		setMoviesToDisplay([...moviesToDisplay.sort(movieComparator)])
+	}, [filter])
+
 	const loadMovies = async () => {
-		const userMovies = (await Movie.getAllForCurrentUser()).sort((a, b) => a.id > b.id)
+		const userMovies = (await Movie.getAllForCurrentUser()).sort((a, b) => a.id < b.id)
 		setMovies(userMovies)
-		setMoviesToDisplay(userMovies)
+		setMoviesToDisplay(userMovies.sort(movieComparator))
 	}
 
 	const formatResearch = (research) => {
@@ -47,10 +51,31 @@ const MoviesList = ({ navigation }) => {
 				}
 			})
 
-			setMoviesToDisplay(matchingMovies)
+			setMoviesToDisplay(matchingMovies.sort(movieComparator))
 		}
 		else {
 			setMoviesToDisplay(movies)
+		}
+	}
+
+	const movieComparator = (a, b) => {
+		switch(filter) {
+			case 'id':
+				return a.id < b.id
+			case 'title':
+				return a.title > b.title
+			case 'rating':
+				if (a.rating !== b.rating)
+					return a.rating < b.rating
+				return a.id < b.id
+			case 'releaseDate':
+				const aDate = new Date(a.releaseDate)
+				const bDate = new Date(b.releaseDate)
+				if (aDate !== bDate)
+					return new Date(a.releaseDate) < new Date(b.releaseDate)
+				return a.id < b.id
+			default:
+				return a.id < b.id
 		}
 	}
 
@@ -73,6 +98,21 @@ const MoviesList = ({ navigation }) => {
 						onChangeText={searchMovie}
 						value={research}
 					/>
+					<View style={styles.filtersContainer}>
+						<Text style={{ fontSize: 16 }}>Trier par : </Text>
+						<Picker
+							selectedValue={filter}
+							style={{ width: 170 }}
+							onValueChange={setFilter}
+							mode="dropdown"
+						>
+							<Picker.Item label="Identifiant" value="id" />
+							<Picker.Item label="Titre" value="title" />
+							<Picker.Item label="Note" value="rating" />
+							<Picker.Item label="Date de sortie" value="releaseDate" />
+						</Picker>
+					</View>
+
 					{moviesToDisplay.length ?
 						<SafeAreaView style={[styles.listContainer, styles.heightAuto]}>
 							<FlatList
@@ -120,8 +160,16 @@ const styles = StyleSheet.create({
 		marginHorizontal: 10
 	},
 
+	filtersContainer: {
+		display: 'flex',
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginHorizontal: 10,
+		marginTop: 10
+	},
+
 	listContainer: {
-		paddingBottom: 145,
+		paddingBottom: 195,
 		paddingTop: 5,
 		paddingHorizontal: 8
 	},

@@ -20,13 +20,14 @@ const SearchMovie = ({ navigation }) => {
 			OMBdAPI.getMovieByName(formatResearch(research))
 				.then(res => {
 					if (res.data.Response === 'True') {
+						console.log(res.data.Released)
 						setMovie({
 							imdbLink: `https://www.imdb.com/title/${res.data.imdbID}`,
 							posterURI: res.data.Poster,
 							title: res.data.Title,
 							director : res.data.Director,
 							rating: Math.round(Number.parseFloat(res.data.imdbRating) / 2),
-							releaseDate: new Date(res.data.Released),
+							releaseDate: res.data.Released !== 'N/A' ? new Date(res.data.Released) : null,
 							summary: res.data.Plot
 						})
 					}
@@ -61,7 +62,9 @@ const SearchMovie = ({ navigation }) => {
 						/>
 					</View>
 
-					<Text style={styles.date}>Sorti le { movie.releaseDate.toLocaleDateString() }</Text>
+					{movie.releaseDate &&
+						<Text style={styles.date}>Sorti le { movie.releaseDate.toLocaleDateString() }</Text>
+					}
 
 					<Text style={styles.summary}>{ movie.summary }</Text>
 
@@ -73,6 +76,7 @@ const SearchMovie = ({ navigation }) => {
 								defaults: {
 									title: movie.title,
 									posterURI: movie.posterURI,
+									releaseDate: movie.releaseDate ? movie.releaseDate.toISOString() : null,
 									summary: movie.summary,
 									rating: movie.rating,
 									imdbLink: movie.imdbLink

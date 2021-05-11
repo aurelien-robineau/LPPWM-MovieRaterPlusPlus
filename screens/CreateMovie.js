@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, TextInput, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, TextInput, Text, ScrollView, TouchableOpacity, Image, Keyboard } from 'react-native'
 import { Icon } from 'react-native-elements'
-import * as DocumentPicker from 'expo-document-picker';
+import * as DocumentPicker from 'expo-document-picker'
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 import CustomButton from '../components/CustomButton'
 import Movie from '../models/Movie'
-import RatingInput from '../components/RatingInput';
-import User from '../models/User';
+import RatingInput from '../components/RatingInput'
+import User from '../models/User'
 
 const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/
 
@@ -16,16 +17,17 @@ const CreateMovie = ({ navigation, route }) => {
 
 	const [title, setTitle] = useState(movie?.title ?? defaults?.title ?? null)
 	const [poster, setPoster] = useState(movie?.posterURI ?? defaults?.posterURI ?? null)
+	const [releaseDate, setReleaseDate] = useState(new Date(movie?.releaseDate ?? defaults?.releaseDate ?? new Date()))
 	const [summary, setSummary] = useState(movie?.summary ?? defaults?.summary ?? null)
 	const [comments, setComments] = useState(movie?.comments ?? defaults?.comments ?? null)
 	const [rating, setRating] = useState(movie?.rating ?? defaults?.rating ?? 0)
 	const [imdbLink, setImdbLink] = useState(movie?.imdbLink ?? defaults?.imdbLink ?? null)
-	const [errors, setErrors] = useState({})
 
+	const [showDatePicker, setShowDatePicker] = useState(false)
+	const [errors, setErrors] = useState({})
 	
 	useEffect(() => {
 		const blur = navigation.addListener('blur', () => {
-			console.log('blur')
 			resetForm()
 		})
 
@@ -73,6 +75,7 @@ const CreateMovie = ({ navigation, route }) => {
 			newMovie = new Movie(
 				title,
 				poster,
+				releaseDate,
 				summary,
 				comments,
 				rating,
@@ -160,6 +163,28 @@ const CreateMovie = ({ navigation, route }) => {
 				}
 				{errors.poster &&
 					<Text style={styles.inputError}>{errors.poster}</Text>
+				}
+			</View>
+			
+			<View style={styles.formGroup}>
+				<Text style={styles.label}>Date de sortie</Text>
+				<TextInput
+					style={styles.input}
+					value={releaseDate.toLocaleDateString()}
+					onFocus={() => setShowDatePicker(true)}
+				/>
+				{showDatePicker &&
+					<DateTimePicker
+						value={releaseDate}
+						mode="date"
+						is24Hour={true}
+						display="default"
+						onChange={(event, date) => {
+							setShowDatePicker(false)
+							Keyboard.dismiss()
+							if (date) setReleaseDate(date)
+						}}
+					/>
 				}
 			</View>
 
