@@ -59,7 +59,7 @@ const Login = ({ navigation, route }) => {
 			return false
 		}
 
-		if (action === 'login' && !(await User.isUsernameAvailable(username))) {
+		if (action === 'register' && !(await User.isUsernameAvailable(username))) {
 			setError("Nom d'utilisateur déjà utilisé")
 			return false
 		}

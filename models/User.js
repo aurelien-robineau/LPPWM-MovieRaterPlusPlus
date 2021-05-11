@@ -47,7 +47,7 @@ export default class User {
 		const value = await AsyncStorage.getItem('@users')
 		let users = value ? JSON.parse(value) : []
 
-		for (let user in users) {
+		for (let user of users) {
 			if (user.username === username)
 				return false
 		}
