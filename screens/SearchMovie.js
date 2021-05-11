@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, TextInput, Text, Image } from 'react-native'
+import { StyleSheet, View, TextInput, Text, Image, ScrollView } from 'react-native'
+import CustomButton from '../components/CustomButton'
 import RatingView from '../components/RatingView'
 
 import OMBdAPI from '../services/OMBdAPI'
@@ -20,7 +21,8 @@ const SearchMovie = ({ navigation }) => {
 				.then(res => {
 					if (res.data.Response === 'True') {
 						setMovie({
-							poster: res.data.Poster,
+							imdbLink: `https://www.imdb.com/title/${res.data.imdbID}`,
+							posterURI: res.data.Poster,
 							title: res.data.Title,
 							director : res.data.Director,
 							rating: Math.round(Number.parseFloat(res.data.imdbRating) / 2),
@@ -36,7 +38,7 @@ const SearchMovie = ({ navigation }) => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			<TextInput
 				style={styles.input}
 				placeholder="Recherche"
@@ -47,7 +49,7 @@ const SearchMovie = ({ navigation }) => {
 			{movie ?
 				<View style={styles.movie}>
 					<View style={styles.posterContainer}>
-						<Image style={styles.poster} source={{ uri: movie.poster }}/>
+						<Image style={styles.poster} source={{ uri: movie.posterURI }}/>
 					</View>
 
 					<Text style={styles.title}>{ movie.title }</Text>
@@ -62,11 +64,26 @@ const SearchMovie = ({ navigation }) => {
 					<Text style={styles.date}>Sorti le { movie.releaseDate.toLocaleDateString() }</Text>
 
 					<Text style={styles.summary}>{ movie.summary }</Text>
+
+					<View style={styles.controlsContainer}>
+						<CustomButton
+							label="Ajouter à ma liste"
+							onPress={() => navigation.navigate('CreateMovie', {
+								defaults: {
+									title: movie.title,
+									posterURI: movie.posterURI,
+									summary: movie.summary,
+									rating: movie.rating,
+									imdbLink: movie.imdbLink
+								}
+							})}
+						/>
+					</View>
 				</View>
 				:
 				<Text style={styles.noResults}>Aucun résultat</Text>
 			}
-		</View>
+		</ScrollView>
 	)
 }
 
@@ -128,6 +145,12 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		textAlign: 'center',
 		marginTop: 50
+	},
+
+	controlsContainer: {
+		display: 'flex',
+		alignItems: 'center',
+		marginVertical: 20
 	}
 })
 

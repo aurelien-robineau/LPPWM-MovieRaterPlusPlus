@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 	controlsContainer: {
 		display: 'flex',
 		alignItems: 'center',
-		marginHorizontal: 20
+		margin: 20
 	},
 
 	noMovie: {

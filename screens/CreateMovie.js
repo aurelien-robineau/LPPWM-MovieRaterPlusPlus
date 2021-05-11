@@ -12,13 +12,14 @@ const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.
 
 const CreateMovie = ({ navigation, route }) => {
 	const movie = route.params?.movie ?? null
+	const defaults = route.params?.defaults ?? null
 
-	const [title, setTitle] = useState(movie?.title ?? null)
-	const [poster, setPoster] = useState(movie?.posterURI ?? null)
-	const [summary, setSummary] = useState(movie?.summary ?? null)
-	const [comments, setComments] = useState(movie?.comments ?? null)
-	const [rating, setRating] = useState(movie?.rating ?? 0)
-	const [imdbLink, setImdbLink] = useState(movie?.imdbLink ?? null)
+	const [title, setTitle] = useState(movie?.title ?? defaults?.title ?? null)
+	const [poster, setPoster] = useState(movie?.posterURI ?? defaults?.posterURI ?? null)
+	const [summary, setSummary] = useState(movie?.summary ?? defaults?.summary ?? null)
+	const [comments, setComments] = useState(movie?.comments ?? defaults?.comments ?? null)
+	const [rating, setRating] = useState(movie?.rating ?? defaults?.rating ?? 0)
+	const [imdbLink, setImdbLink] = useState(movie?.imdbLink ?? defaults?.imdbLink ?? null)
 	const [errors, setErrors] = useState({})
 
 	const selectPoster = async () => {
