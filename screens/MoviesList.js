@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { TextInput } from 'react-native'
 import { StyleSheet, FlatList, SafeAreaView, Text, TouchableOpacity, View, StatusBar, Dimensions } from 'react-native'
 import { Icon } from 'react-native-elements'
 
@@ -8,21 +9,49 @@ import CustomButton from './../components/CustomButton';
 
 const MoviesList = ({ navigation }) => {
 	const [movies, setMovies] = useState([])
+	const [moviesToDisplay, setMoviesToDisplay] = useState([])
+	const [research, setResearch] = useState(null)
 
 	useEffect(() => {
 		loadMovies()
 	}, [])
 
 	useEffect(() => {
-		const unsubscribe = navigation.addListener('focus', () => {
+		const focus = navigation.addListener('focus', () => {
 			loadMovies()
 		})
 
-		return unsubscribe
+		return focus
 	}, [navigation])
 
 	const loadMovies = async () => {
-		setMovies((await Movie.getAllForCurrentUser()).sort((a, b) => a.id > b.id))
+		const userMovies = (await Movie.getAllForCurrentUser()).sort((a, b) => a.id > b.id)
+		setMovies(userMovies)
+		setMoviesToDisplay(userMovies)
+	}
+
+	const formatResearch = (research) => {
+		return research
+			.toLowerCase()
+			.replace(/\s+/g, '_')
+	}
+
+	const searchMovie = (text) => {
+		setResearch(text)
+		if (text) {
+			const formattedResearch = formatResearch(text)
+			const matchingMovies = []
+			movies.forEach(movie => {
+				if (formatResearch(movie.title).includes(formattedResearch)) {
+					matchingMovies.push(movie)
+				}
+			})
+
+			setMoviesToDisplay(matchingMovies)
+		}
+		else {
+			setMoviesToDisplay(movies)
+		}
 	}
 
 	const renderMovie = ({ item }) => {
@@ -35,13 +64,31 @@ const MoviesList = ({ navigation }) => {
 	}
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.heightAuto}>
 			{ movies.length ?
-				<FlatList
-					data={movies}
-					renderItem={renderMovie}
-					keyExtractor={item => item.id.toString()}
-				/>
+				<View style={styles.heightAuto}>
+					<TextInput
+						style={styles.input}
+						placeholder="Recherche"
+						onChangeText={searchMovie}
+						value={research}
+					/>
+					{moviesToDisplay.length ?
+						<SafeAreaView style={[styles.listContainer, styles.heightAuto]}>
+							<FlatList
+								data={moviesToDisplay}
+								renderItem={renderMovie}
+								keyExtractor={item => item.id.toString()}
+							/>
+						</SafeAreaView>
+						:
+						<View style={styles.noMoviesContainer}>
+							<Text style={styles.noMoviesText}>
+								Aucun résultat
+							</Text>
+						</View>
+					}
+				</View>
 				:
 				<View style={styles.noMoviesContainer}>
 					<Text style={styles.noMoviesText}>
@@ -53,13 +100,30 @@ const MoviesList = ({ navigation }) => {
 					/>
 				</View>
 			}
-		</SafeAreaView>
+		</View>
 	)
 }
 
 const styles = StyleSheet.create({
-	container: {
-		minHeight: Dimensions.get('window').height - StatusBar.currentHeight
+	heightAuto: {
+		height: '100%',
+		minHeight: Dimensions.get('window').height - StatusBar.currentHeight,
+	},
+
+	input: {
+		backgroundColor: 'white',
+		color: 'black',
+		paddingHorizontal: 20,
+		paddingVertical: 18,
+		fontSize: 18,
+		marginTop: 10,
+		marginHorizontal: 10
+	},
+
+	listContainer: {
+		paddingBottom: 145,
+		paddingTop: 5,
+		paddingHorizontal: 8
 	},
 
 	noMoviesContainer: {

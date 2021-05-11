@@ -24,10 +24,12 @@ const CreateMovie = ({ navigation, route }) => {
 
 	
 	useEffect(() => {
-		navigation.addListener('blur', () => {
+		const blur = navigation.addListener('blur', () => {
 			console.log('blur')
 			resetForm()
 		})
+
+		return blur
 	}, [navigation])
 
 	useEffect(() => {
